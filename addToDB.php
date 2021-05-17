@@ -13,8 +13,7 @@
 		$descriptionText = "";
 		if($_FILES['fileUpload']['type'][$i] == "application/pdf"){
 			$descriptionText = pdfExtractText($uploadedfilename);
-			//$thumbImg = pdfToImage($uploadedfilename);
-			$thumbImg = "default.jpg";
+			$thumbImg = pdfToImage($uploadedfilename);	
 		}
 		//If the file is an image, copy it to img folder
 		else if(strpos($_FILES['fileUpload']['type'][$i], "image") !== false){
@@ -25,7 +24,7 @@
 		$statement = $pdo->prepare("INSERT INTO files (fileName, fileTags, fileDesc, fileSrc, fileThumb, fileDate) VALUES (?, ?, ?, ?, ?, ?)");
 		$statement->execute(array(
 			$_POST["fileName"], 
-			$_POST["fileTags"], 
+			strtolower($_POST["fileTags"]), 
 			$descriptionText, 
 			$uploadedfilename, 
 			$thumbImg, 
@@ -57,9 +56,13 @@
 	* TODO
 	*/
 	function pdfToImage($filePath){
-		$imagick = new Imagick($uploadedfilename.'[0]');
-		$imagick->setImageFormat('jpg');
-		file_put_contents("img/test.jpg", $imagick);
-		
-		return "test.jpg";
+		try{
+			$imagick = new Imagick($uploadedfilename.'[0]');
+			$imagick->setImageFormat('jpg');
+			file_put_contents("img/test.jpg", $imagick);
+			
+			return "test.jpg";
+		}catch(Exception $e){
+			return "default.jpg";			
+		}
 	}

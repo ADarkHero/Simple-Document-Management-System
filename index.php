@@ -59,53 +59,12 @@
 									</header>
 								</section>
 										<?php							
-											//TODO: EXECUTE SQL and read response
 											if($pdo->query($sql)->rowCount() > 1){	
-										?>
-												<div class="posts">	
-										<?php
-													foreach ($pdo->query($sql) as $row) {	
-										?>
-														<!-- Display multiple files -->	
-														<article>
-															<a href="#" class="image"><img src="img/<?php echo $row["fileThumb"]; ?>" alt="" /></a>
-															<h3><?php echo $row['fileName']; ?></h3>
-															<p><?php echo $row['fileDate']; ?></p>
-															<p><?php echo $row['fileTags']; ?></p>
-															<ul class="actions">
-																<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button">DOWNLOAD FILE</a></li>
-																<li><a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="button">FILEINFO</a></li>
-															</ul>
-														</article>
-										<?php
-													} //END of foreach
-										?>
-												</div> <!-- Close posts div -->
-										<?php
-											} // END of if
+												generateMultipleLayout($pdo, $sql);
+											} 
 											else{
-												foreach ($pdo->query($sql) as $row) {
-										?>
-													<!-- Display single file -->
-													<section id="banner">
-														<div class="content">
-															<header>
-																<h1><?php echo $row['fileName']; ?></h1>
-																<p><?php echo $row['fileDate']; ?></p>
-																<p><?php echo $row['fileTags']; ?></p>
-															</header>
-															<p><?php echo $row['fileDesc']; ?><</p>
-															<ul class="actions">
-																<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button big">DOWNLOAD FILE</a></li>
-															</ul>
-														</div>
-														<span class="image object">
-															<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
-														</span>
-													</section>
-										<?php
-												} //END of foreach
-											} //END of else
+												generateSingleLayout($pdo, $sql);
+											}
 										?>
 						</div>
 					</div>
@@ -197,10 +156,19 @@
 	</body>
 </html>
 
+
+
 <?php
 
+
+/*
+*
+*/
 function searchAlgorithm($s){
-	$sql = 'SELECT * FROM files WHERE fileSrc LIKE "' . $s. '" OR fileDesc LIKE "%'. $s . '%" ';
+	$sql = 'SELECT * FROM files WHERE 
+			fileName LIKE "%' . $s. '%" OR 
+			fileSrc LIKE "%' . $s. '%" OR 
+			fileDesc LIKE "%'. $s . '%" ';
 			
 			foreach(explode(" ", $s) as $tag){
 				$sql .= ' OR fileTags LIKE "%' . $tag . '%" ';
@@ -209,4 +177,61 @@ function searchAlgorithm($s){
 	$sql .= 'ORDER BY fileDate DESC';
 	
 	return $sql;
+}
+
+
+/*
+*
+*/
+function generateMultipleLayout($pdo, $sql){
+	echo '<div class="posts">';	
+	
+	foreach ($pdo->query($sql) as $row) {	
+	?>
+		<!-- Display multiple files -->	
+		<article>
+			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image">
+				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
+			</a>
+			<h3><?php echo $row['fileName']; ?></h3>
+			<p><?php echo $row['fileDate']; ?></p>
+			<p><?php echo strtoupper($row['fileTags']); ?></p>
+			<ul class="actions">
+				<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button">DOWNLOAD FILE</a></li>
+				<li><a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="button">FILEINFO</a></li>
+			</ul>
+		</article>
+	<?php
+	}
+	
+	echo '</div>';
+}
+
+
+
+/*
+*
+*/
+function generateSingleLayout($pdo, $sql){
+	foreach ($pdo->query($sql) as $row) {
+	?>
+		<!-- Display single file -->
+		<section id="banner">
+			<div class="content">
+				<header>
+					<h1><?php echo $row['fileName']; ?></h1>
+					<p><?php echo $row['fileDate']; ?></p>
+					<p><?php echo $row['fileTags']; ?></p>
+				</header>
+				<p><?php echo $row['fileDesc']; ?></p>
+				<ul class="actions">
+					<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button big">DOWNLOAD FILE</a></li>
+				</ul>
+			</div>
+			<span class="image object">
+				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
+			</span>
+		</section>
+	<?php
+	}
 }
