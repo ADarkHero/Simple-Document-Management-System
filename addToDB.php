@@ -1,4 +1,6 @@
 <?php		
+	error_reporting(-1);
+	
 	 // Count total files
 	 $countfiles = count($_FILES['fileUpload']['name']);
 	 
@@ -13,7 +15,8 @@
 		$descriptionText = "";
 		if($_FILES['fileUpload']['type'][$i] == "application/pdf"){
 			$descriptionText = pdfExtractText($uploadedfilename);
-			$thumbImg = pdfToImage($uploadedfilename);	
+			//$thumbImg = pdfToImage($uploadedfilename);	
+			$thumbImg = "default.jpg";
 		}
 		//If the file is an image, copy it to img folder
 		else if(strpos($_FILES['fileUpload']['type'][$i], "image") !== false){
@@ -25,11 +28,18 @@
 		$statement->execute(array(
 			$_POST["fileName"], 
 			strtolower($_POST["fileTags"]), 
-			$descriptionText, 
+			substr($descriptionText, 0, 255), 
 			$uploadedfilename, 
 			$thumbImg, 
 			$_POST["fileDate"]
 		)); 
+		
+		
+		//TODO: ERROR HANDLING:
+		
+		$arr = $statement->errorInfo();
+		print_r($arr);
+		
 	   
 		echo "✅ " . $uploadedfilename . "<br>";
 	}

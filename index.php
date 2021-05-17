@@ -190,7 +190,7 @@ function generateMultipleLayout($pdo, $sql){
 	?>
 		<!-- Display multiple files -->	
 		<article>
-			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image">
+			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image multiimage">
 				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
 			</a>
 			<h3><?php echo $row['fileName']; ?></h3>
