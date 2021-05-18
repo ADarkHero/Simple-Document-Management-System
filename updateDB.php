@@ -10,4 +10,4 @@
 		$_POST["fileIdUpd"]
 	)); 		
    
-	echo "✅ Updated file info!";
+	echo '✅ Updated file info!<br><a href="">Reload to view changes...</a>';

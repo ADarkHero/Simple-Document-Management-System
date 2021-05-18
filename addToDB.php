@@ -16,8 +16,15 @@
 		$thumbImg = "default.jpg";
 		$descriptionText = $_POST["fileDesc"];
 		
+		//If the file is plain text, write its content to the description
+		if($_FILES['fileUpload']['type'][$i] == "text/plain" || $_FILES['fileUpload']['type'][$i] == "application/vnd.ms-excel"){
+			//Only read description, if user didn't set one themselves
+			if($_POST["fileDesc"] == ""){
+				$descriptionText = file_get_contents("files/" . $uploadedfilename);
+			}
+		}
 		//If the file is a pdf, get its content as text
-		if($_FILES['fileUpload']['type'][$i] == "application/pdf"){
+		else if($_FILES['fileUpload']['type'][$i] == "application/pdf"){
 			//Only read pdf description, if user didn't set one themselves
 			if($_POST["fileDesc"] == ""){
 				$descriptionText = pdfExtractText($uploadedfilename);
@@ -47,7 +54,7 @@
 		print_r($arr);
 		
 	   
-		echo "✅ " . $uploadedfilename . "<br>";
+		echo "✅ " . $_FILES['fileUpload']['type'][$i]. "<br>";
 	}
 	
 	

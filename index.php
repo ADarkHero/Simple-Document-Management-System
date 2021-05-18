@@ -234,7 +234,7 @@ function generateSingleLayout($pdo, $sql){
 	?>
 		<section id="banner">
 			<div class="content">
-				<form method="post" action="index.php?s=<?php echo $row['fileSrc']; ?>" enctype="multipart/form-data">
+				<form method="post" action="index.php?id=<?php echo $row['fileId']; ?>&s=<?php echo $row['fileSrc']; ?>" enctype="multipart/form-data">
 			<div class="form-group row">
 				<input type="text" class="form-control" id="fileNameUpd" name="fileNameUpd" value="<?php echo $row['fileName']; ?>">
 			</div>

@@ -2,3 +2,6 @@
 config.php
 *.PDF
 files/favicon.ico
+*.txt
+*.csv
+*.xlsx
