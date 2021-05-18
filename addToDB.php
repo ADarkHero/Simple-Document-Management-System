@@ -11,12 +11,18 @@
 		// Upload file
 		move_uploaded_file($_FILES['fileUpload']['tmp_name'][$i], 'files/'.$uploadedfilename);
 	   
+		var_dump($_POST["fileDesc"]);
+		
+		$thumbImg = "default.jpg";
+		$descriptionText = $_POST["fileDesc"];
+		
 		//If the file is a pdf, get its content as text
-		$descriptionText = "";
 		if($_FILES['fileUpload']['type'][$i] == "application/pdf"){
-			$descriptionText = pdfExtractText($uploadedfilename);
+			//Only read pdf description, if user didn't set one themselves
+			if($_POST["fileDesc"] == ""){
+				$descriptionText = pdfExtractText($uploadedfilename);
+			}
 			//$thumbImg = pdfToImage($uploadedfilename);	
-			$thumbImg = "default.jpg";
 		}
 		//If the file is an image, copy it to img folder
 		else if(strpos($_FILES['fileUpload']['type'][$i], "image") !== false){

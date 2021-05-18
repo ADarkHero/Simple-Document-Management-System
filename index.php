@@ -41,14 +41,28 @@
 								<section>
 									<header class="major">
 										<h2>
-											<?php 												
-												if(isset($_GET["s"])){
+											<?php 
+												//Display specific file
+												if(isset($_GET["id"])){
+													$sql = "SELECT * FROM files WHERE fileId = " . $_GET["id"];
+													if(isset($_GET["s"])){
+														$s = htmlspecialchars($_GET["s"]);
+														echo substr($s, 0, 50); 
+														if(strlen($s) > 50){ echo "..."; }
+													}
+													else{
+														echo $_GET["id"];
+													}
+												}
+												//Search for files
+												else if(isset($_GET["s"])){
 													$s = htmlspecialchars($_GET["s"]);
 													echo substr($s, 0, 50); 
 													if(strlen($s) > 50){ echo "..."; }
 													
 													$sql = searchAlgorithm($s);
 												}
+												//Display most recent files
 												else{
 													echo "Most recent files";
 													
@@ -82,11 +96,11 @@
 
 							<!-- Menu -->
 								<nav id="menu">
-									<header class="major">
+									<header class="major mt-3">
 										<h2>Add new file</h2>
 									</header>
 									<form method="post" action="index.php" enctype="multipart/form-data">
-										<div class="form-group row">
+										<div class="form-group row mt-3">
 											    <input type="text" class="form-control" id="fileName" name="fileName"  placeholder="Name your files">
 
 										</div>
@@ -95,6 +109,9 @@
 										</div>
 										<div class="form-group row mt-3">
 											<input class="form-control" type="datetime-local" name="fileDate" id="fileDate" value="<?php echo date('Y-m-d\Th:i:s');?>" id="example-datetime-local-input">
+										</div>
+										<div class="form-group row mt-3">
+											<textarea class="form-control" name="fileDesc" id="fileDesc" rows="5"placeholder="File description (gets generated automatically, when the file is a pdf or txt/csv document)"></textarea>
 										</div>
 										<div class="form-group row mt-3">
 											<textarea class="form-control" name="fileTags" id="fileTags" rows="5"placeholder="Tag your files... (all tags are single words seperated by a space)"></textarea>
@@ -106,18 +123,18 @@
 								</nav>
 								
 								<?php
-										if(isset($_FILES["fileUpload"]["name"])){
-									?>
-											<header class="major">
-												<h5>
-													<?php
-														require_once "addToDB.php";
-													?>
-												</h5>
-											</header>
-									<?php
-										}
-									?>
+									if(isset($_FILES["fileUpload"]["name"])){
+								?>
+										<header class="major">
+											<h5>
+												<?php
+													require_once "addToDB.php";
+												?>
+											</h5>
+										</header>
+								<?php
+									}
+								?>
 
 							<!-- Footer -->
 								<footer id="footer">
@@ -198,7 +215,7 @@ function generateMultipleLayout($pdo, $sql){
 			<p><?php echo strtoupper($row['fileTags']); ?></p>
 			<ul class="actions">
 				<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button">DOWNLOAD FILE</a></li>
-				<li><a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="button">FILEINFO</a></li>
+				<li><a href="index.php?id=<?php echo $row['fileId']; ?>&s=<?php echo $row['fileSrc']; ?>" class="button">FILEINFO</a></li>
 			</ul>
 		</article>
 	<?php
@@ -215,23 +232,43 @@ function generateMultipleLayout($pdo, $sql){
 function generateSingleLayout($pdo, $sql){
 	foreach ($pdo->query($sql) as $row) {
 	?>
-		<!-- Display single file -->
 		<section id="banner">
 			<div class="content">
-				<header>
-					<h1><?php echo $row['fileName']; ?></h1>
-					<p><?php echo $row['fileDate']; ?></p>
-					<p><?php echo $row['fileTags']; ?></p>
-				</header>
-				<p><?php echo $row['fileDesc']; ?></p>
-				<ul class="actions">
-					<li><a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button big">DOWNLOAD FILE</a></li>
-				</ul>
+				<form method="post" action="index.php?s=<?php echo $row['fileSrc']; ?>" enctype="multipart/form-data">
+			<div class="form-group row">
+				<input type="text" class="form-control" id="fileNameUpd" name="fileNameUpd" value="<?php echo $row['fileName']; ?>">
+			</div>
+			<div class="form-group row mt-3">
+				<input class="form-control" type="datetime-local" name="fileDateUpd" id="fileDateUpd" value="<?php $date = new DateTime($row['fileDate']); echo $date->format('Y-m-d\Th:i:s'); ?>" id="example-datetime-local-input">
+			</div>
+			<div class="form-group row mt-3">
+				<textarea class="form-control" name="fileDescUpd" id="fileDescUpd" rows="5"><?php echo $row['fileDesc']; ?></textarea>
+			</div>
+			<div class="form-group row mt-3">
+				<textarea class="form-control" name="fileTagsUpd" id="fileTagsUpd" rows="5"><?php echo $row['fileTags']; ?></textarea>
+			</div>
+			<div class="form-group row mt-3">
+				<input type="hidden" name="fileIdUpd" id="fileIdUpd" value="<?php echo $row['fileId']; ?>">
+				<button class="btn btn-primary-outline" type="submit">Update file</button>
+				<a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button big">DOWNLOAD FILE</a>
+			</div>
+		</form>
 			</div>
 			<span class="image object">
 				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
 			</span>
 		</section>
+	<?php
+	}
+	if(isset($_POST["fileIdUpd"])){
+	?>
+		<header class="major">
+			<h5>
+				<?php
+					require_once "updateDB.php";
+				?>
+			</h5>
+		</header>
 	<?php
 	}
 }

@@ -2283,3 +2283,15 @@ button,
 .multiimage{
 	height: 10em;
 }
+header.major > :last-child{
+    border-bottom: solid 3px #f56a6a;
+    display: inline-block;
+    margin: 0;
+    padding: 0 0.75em 0.5em 0;
+}
+#main > .inner > section {
+    padding: 2em 0 1em 0;
+}
+#main > .inner > section {
+    border-top: none;
+}
