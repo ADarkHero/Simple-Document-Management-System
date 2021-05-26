@@ -210,10 +210,10 @@ function generateMultipleLayout($pdo, $sql){
 			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image multiimage">
 				<?php
 					if(strpos($row["fileType"], "image") !== false){
-					?><img src="files/<?php echo $row["fileSrc"]; ?>" alt="" /><?php
+					?><img src="files/<?php echo $row["fileThumb"]; ?>" alt="" /><?php
 					}
 					else{
-					?><iframe src="files/<?php echo $row["fileThumb"]; ?>"></iframe><?php	
+					?><iframe src="files/<?php echo $row["fileSrc"]; ?>"></iframe><?php	
 					}
 				?>
 			</a>
@@ -264,10 +264,10 @@ function generateSingleLayout($pdo, $sql){
 			<span class="image object">
 				<?php
 					if(strpos($row["fileType"], "image") !== false){
-					?><img src="files/<?php echo $row["fileSrc"]; ?>" alt="" /><?php
+					?><img src="files/<?php echo $row["fileThumb"]; ?>" alt="" /><?php
 					}
 					else{
-					?><iframe src="files/<?php echo $row["fileThumb"]; ?>"></iframe><?php	
+					?><iframe src="files/<?php echo $row["fileSrc"]; ?>"></iframe><?php	
 					}
 				?>
 			</span>
