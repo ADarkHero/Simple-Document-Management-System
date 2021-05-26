@@ -5,7 +5,7 @@
 	$statement->execute(array(
 		$_POST["fileNameUpd"], 
 		strtolower($_POST["fileTagsUpd"]), 
-		substr($_POST["fileDescUpd"], 0, 255), 
+		substr($_POST["fileDescUpd"], 0, 512), 
 		$_POST["fileDateUpd"],
 		$_POST["fileIdUpd"]
 	)); 		

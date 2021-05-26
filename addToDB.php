@@ -10,9 +10,7 @@
 	   
 		// Upload file
 		move_uploaded_file($_FILES['fileUpload']['tmp_name'][$i], 'files/'.$uploadedfilename);
-	   
-		var_dump($_POST["fileDesc"]);
-		
+	   		
 		$thumbImg = "default.jpg";
 		$descriptionText = $_POST["fileDesc"];
 		$fileType = $_FILES['fileUpload']['type'][$i];
@@ -41,7 +39,7 @@
 		$statement->execute(array(
 			$_POST["fileName"], 
 			strtolower($_POST["fileTags"]), 
-			substr($descriptionText, 0, 255), 
+			substr($descriptionText, 0, 512), 
 			$uploadedfilename, 
 			$thumbImg, 
 			$_POST["fileDate"],
@@ -55,7 +53,7 @@
 		//print_r($arr);
 		
 	   
-		echo "✅ " . $_FILES['fileUpload']['type'][$i]. "<br>";
+		echo "✅ " . $uploadedfilename . "<br>";
 	}
 	
 	

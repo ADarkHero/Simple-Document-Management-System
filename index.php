@@ -208,14 +208,7 @@ function generateMultipleLayout($pdo, $sql){
 		<!-- Display multiple files -->	
 		<article>
 			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image multiimage">
-				<?php
-					if(strpos($row["fileType"], "image") !== false){
-					?><img src="files/<?php echo $row["fileThumb"]; ?>" alt="" /><?php
-					}
-					else{
-					?><iframe src="files/<?php echo $row["fileSrc"]; ?>"></iframe><?php	
-					}
-				?>
+				<?php generatePreview($row); ?>
 			</a>
 			<h3><?php echo $row['fileName']; ?></h3>
 			<p><?php echo $row['fileDate']; ?></p>
@@ -262,14 +255,7 @@ function generateSingleLayout($pdo, $sql){
 		</form>
 			</div>
 			<span class="image object">
-				<?php
-					if(strpos($row["fileType"], "image") !== false){
-					?><img src="files/<?php echo $row["fileThumb"]; ?>" alt="" /><?php
-					}
-					else{
-					?><iframe src="files/<?php echo $row["fileSrc"]; ?>"></iframe><?php	
-					}
-				?>
+				<?php generatePreview($row); ?>
 			</span>
 		</section>
 	<?php
@@ -284,5 +270,23 @@ function generateSingleLayout($pdo, $sql){
 			</h5>
 		</header>
 	<?php
+	}
+}
+
+
+/*
+*
+*/
+function generatePreview($row){
+	//File is pdf (display preview)
+	if($row["fileType"] == "application/pdf"){
+		echo '<iframe src="files/' . $row["fileSrc"] . '"></iframe>';
+	}
+	else if($row["fileType"] == "text/plain" || $row["fileType"] == "application/vnd.ms-excel"){
+		echo $row["fileDesc"];
+	}
+	//File is something else (display thumb image)
+	else{
+		echo '<img src="files/' . $row["fileThumb"] . '" alt=""/>';
 	}
 }
