@@ -208,7 +208,14 @@ function generateMultipleLayout($pdo, $sql){
 		<!-- Display multiple files -->	
 		<article>
 			<a href="index.php?s=<?php echo $row['fileSrc']; ?>" class="image multiimage">
-				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
+				<?php
+					if(strpos($row["fileType"], "image") !== false){
+					?><img src="files/<?php echo $row["fileSrc"]; ?>" alt="" /><?php
+					}
+					else{
+					?><iframe src="files/<?php echo $row["fileThumb"]; ?>"></iframe><?php	
+					}
+				?>
 			</a>
 			<h3><?php echo $row['fileName']; ?></h3>
 			<p><?php echo $row['fileDate']; ?></p>
@@ -255,7 +262,14 @@ function generateSingleLayout($pdo, $sql){
 		</form>
 			</div>
 			<span class="image object">
-				<img src="img/<?php echo $row["fileThumb"]; ?>" alt="" />
+				<?php
+					if(strpos($row["fileType"], "image") !== false){
+					?><img src="files/<?php echo $row["fileSrc"]; ?>" alt="" /><?php
+					}
+					else{
+					?><iframe src="files/<?php echo $row["fileThumb"]; ?>"></iframe><?php	
+					}
+				?>
 			</span>
 		</section>
 	<?php
