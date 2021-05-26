@@ -123,19 +123,24 @@
 								</nav>
 								
 								<?php
-									if(isset($_FILES["fileUpload"]["name"])){
+									if(isset($_FILES["fileUpload"]["name"]) || isset($_GET["deleteFileID"])){
 								?>
 										<header class="major">
 											<h5>
 												<?php
-													require_once "addToDB.php";
+													if(isset($_FILES["fileUpload"]["name"])){
+														require_once "addToDB.php";
+													}
+													else if(isset($_GET["deleteFileID"])){
+														require_once "deleteFromDB.php";
+													}
 												?>
 											</h5>
 										</header>
 								<?php
 									}
 								?>
-
+								
 							<!-- Footer -->
 								<footer id="footer">
 									<p class="copyright">Made with ❤ by <a href="https://www.adarkhero.de" target="_blank">ADarkHero</a><br>
@@ -161,13 +166,25 @@
 
 			
 			<!-- Load FilePond library -->
+			<!--
 			<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 			<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-
+			-->
+			
 			<!-- Turn all file input elements into ponds -->
+			<!--
 			<script>
 				FilePond.registerPlugin(FilePondPluginImagePreview);				
 				FilePond.parse(document.body);
+			</script>
+			-->
+			
+			<script>
+				function deleteFromDB(url){
+					if (confirm('Do you really want to delete this file?')) {
+						window.location.replace(url);
+					} 	
+				}
 			</script>
 
 	</body>
@@ -176,8 +193,6 @@
 
 
 <?php
-
-
 /*
 *
 */
@@ -194,6 +209,26 @@ function searchAlgorithm($s){
 	$sql .= 'ORDER BY fileDate DESC';
 	
 	return $sql;
+}
+
+
+
+/*
+*
+*/
+function generatePreview($row){
+	//File is pdf (display preview)
+	if($row["fileType"] == "application/pdf"){
+		echo '<iframe src="files/' . $row["fileSrc"] . '"></iframe>';
+	}
+	//File is txt or csv (show description)
+	else if($row["fileType"] == "text/plain" || $row["fileType"] == "application/vnd.ms-excel"){
+		echo $row["fileDesc"];
+	}
+	//File is something else (display thumb image)
+	else{
+		echo '<img src="files/' . $row["fileThumb"] . '" alt=""/>';
+	}
 }
 
 
@@ -250,7 +285,8 @@ function generateSingleLayout($pdo, $sql){
 			<div class="form-group row mt-3">
 				<input type="hidden" name="fileIdUpd" id="fileIdUpd" value="<?php echo $row['fileId']; ?>">
 				<button class="btn btn-primary-outline" type="submit">Update file</button>
-				<a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="button big">DOWNLOAD FILE</a>
+				<a onclick='deleteFromDB("index.php?deleteFileID=<?php echo $row['fileId']; ?>&deleteFileSrc=<?php echo $row['fileSrc']; ?>")' class="btn btn-danger">DELETE FILE</a>
+				<a href="files/<?php echo $row['fileSrc']; ?>" target="_blank" class="btn btn-primary">DOWNLOAD FILE</a>
 			</div>
 		</form>
 			</div>
@@ -270,23 +306,5 @@ function generateSingleLayout($pdo, $sql){
 			</h5>
 		</header>
 	<?php
-	}
-}
-
-
-/*
-*
-*/
-function generatePreview($row){
-	//File is pdf (display preview)
-	if($row["fileType"] == "application/pdf"){
-		echo '<iframe src="files/' . $row["fileSrc"] . '"></iframe>';
-	}
-	else if($row["fileType"] == "text/plain" || $row["fileType"] == "application/vnd.ms-excel"){
-		echo $row["fileDesc"];
-	}
-	//File is something else (display thumb image)
-	else{
-		echo '<img src="files/' . $row["fileThumb"] . '" alt=""/>';
 	}
 }
