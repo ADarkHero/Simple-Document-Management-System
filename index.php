@@ -108,7 +108,7 @@
 											<input type="file" name="fileUpload[]" id="fileUpload" multiple>
 										</div>
 										<div class="form-group row mt-3">
-											<input class="form-control" type="datetime-local" name="fileDate" id="fileDate" value="<?php echo date('Y-m-d\Th:i:s');?>" id="example-datetime-local-input">
+											<input class="form-control" type="datetime-local" name="fileDate" id="fileDate" value="<?php echo date('Y-m-d\TH:i:s');?>" id="example-datetime-local-input">
 										</div>
 										<div class="form-group row mt-3">
 											<textarea class="form-control" name="fileDesc" id="fileDesc" rows="5"placeholder="File description (gets generated automatically, when the file is a pdf or txt/csv document)"></textarea>

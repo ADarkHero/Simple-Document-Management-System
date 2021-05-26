@@ -31,8 +31,7 @@
 		}
 		//If the file is an image, copy it to img folder
 		else if(strpos($fileType, "image") !== false){
-			//TODO: Generate thumbnail
-			$thumbImg = $uploadedfilename;
+			$thumbImg = imageThumb($uploadedfilename);
 		}
 		
 		$statement = $pdo->prepare("INSERT INTO files (fileName, fileTags, fileDesc, fileSrc, fileThumb, fileDate, fileType) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -71,4 +70,36 @@
 		$pdftext = $parser->parseFile("files/" . $filePath)->getText();
 		
 		return $pdftext;
+	}
+	
+	
+	
+	/*
+	*
+	*/
+	function imageThumb($fileName){
+		// Calculate new size
+		list($width, $height) = getimagesize("files/" . $fileName);
+		
+		$resize = 500;
+		if($width > $resize){
+			$newwidth = $resize;
+			$newheight = $resize / $width * $height;
+		}
+		else if($height > $resize){
+			$newheight = $resize;
+			$newwidth = $resize / $height * $width;
+		}
+
+		// Load picture
+		$thumb = imagecreatetruecolor($newwidth, $newheight);
+		$source = imagecreatefromjpeg("files/" . $fileName);
+
+		// Scale picture
+		imagecopyresized($thumb, $source, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
+		// Save file
+		$newFileName = substr_replace($fileName, "-thumb.", strrpos($fileName, "."), strlen("."));
+		imagejpeg($thumb, "files/" . $newFileName);
+		return $newFileName;
 	}
